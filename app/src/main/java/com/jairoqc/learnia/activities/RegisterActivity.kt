@@ -13,6 +13,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.jairoqc.learnia.R
+import com.jairoqc.learnia.models.ResponseHttp
+import com.jairoqc.learnia.models.User
+import com.jairoqc.learnia.providers.UsersProvider
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class RegisterActivity : AppCompatActivity() {
     var textViewToLogin: TextView? = null
@@ -20,6 +26,10 @@ class RegisterActivity : AppCompatActivity() {
     var inputPasswordRegister: EditText?= null
     var inputPasswordReplitRegister: EditText? = null
     var buttonRegister: Button? = null
+
+    //Al cambiar de servidor... esto debe cambiar
+    var usersProvider= UsersProvider()
+    //Al cambiar de servidor... esto debe cambiar /--->
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,6 +86,27 @@ class RegisterActivity : AppCompatActivity() {
         val passwordReplit= inputPasswordReplitRegister?.text.toString()
 
         if(validateForm(email,password,passwordReplit)){
+            //Al cambiar de servidor... esto debe cambiar (open)/--->
+            val user = User(
+                email= email,
+                password = password
+            )
+            usersProvider.register(user)?.enqueue(object : Callback<ResponseHttp>{
+                override fun onResponse(
+                    call: Call<ResponseHttp>,
+                    response: Response<ResponseHttp>
+                ) {
+                    Toast.makeText(this@RegisterActivity,response.body()?.message, Toast.LENGTH_LONG).show()
+                    Log.d("RegisterActivity", "Response: ${response}")
+                    Log.d("RegisterActivity", "Body: ${response.body()}")
+                }
+
+                override fun onFailure(call: Call<ResponseHttp>, t: Throwable) {
+                    Log.d("RegisterActivity","Se produjo un error ${t.message}")
+                    Toast.makeText(this@RegisterActivity,"Se produjo un error ${t.message}",Toast.LENGTH_LONG).show()
+                }
+            //Al cambiar de servidor... esto debe cambiar (close)/--->
+            })
             Log.d("LoginActivity","El formulario es valido")
             Toast.makeText(this,"El formulario es valido",Toast.LENGTH_LONG).show()
             Toast.makeText(this,"El email es ${email}",Toast.LENGTH_LONG).show()
