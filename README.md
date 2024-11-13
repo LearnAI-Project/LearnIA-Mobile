@@ -1,6 +1,7 @@
 # LearnIA
 
 **Pruebas de Registro con Postgresql**
+
 Las pruebas fueron aprobadas para RegisterActivity
 
 **Primera Actualización en la interfaz**
